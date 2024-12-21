@@ -16,6 +16,7 @@ class Utilisateur_pf extends Model
     public $timestamps = true; 
 
     protected $fillable = [
+        
         'nom',
         'prenom',
         'type_utilisateur',
@@ -42,4 +43,5 @@ class Utilisateur_pf extends Model
     {
         return $this->hasOne(Etudiant::class, 'id_utilisateur');
     }
+    
 }

@@ -50,7 +50,7 @@ class EtudiantController extends Controller
     $request->validate([
         'nom' => 'required|string',
         'prenom' => 'required|string',
-        'adresse_email' => 'required|email|unique:utilisateur_pf,adresse_email,',
+        'adresse_email' => 'required|email|unique:utilisateur_pf,adresse_email,' . $utilisateur_pf->id_utilisateur,
         'type_utilisateur' => 'nullable|string',
         'intitule_option' => 'nullable|integer',
         'moyenne_m1' => 'nullable|numeric',
@@ -66,14 +66,23 @@ class EtudiantController extends Controller
 }
 
 
-    public function destroy(Utilisateur_pf $utilisateur_pf)
-    {
-        if ($utilisateur_pf->etudiant) {
-            $utilisateur_pf->etudiant->delete();
-        }
+public function destroy($id_utilisateur)
+{
 
-        $utilisateur_pf->delete();
-        
-        return response()->json(null, 204);
+    $utilisateur_pf = Utilisateur_pf::find($id_utilisateur);
+
+    if (!$utilisateur_pf) {
+        return response()->json(['message' => 'Utilisateur not found'], 404);
     }
+
+    if ($utilisateur_pf->etudiant) {
+        $utilisateur_pf->etudiant->delete();
+    }
+
+    $utilisateur_pf->delete();
+
+    return response()->json(['message' => 'Deleted successfully'], 204);
+}
+
+
 }
