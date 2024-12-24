@@ -18,6 +18,8 @@ class Etudiant extends Model
         'moyenne_m1',
     ];
 
+   
+    
     public function utilisateur()
     {
         return $this->belongsTo(Utilisateur_pf::class, 'id_utilisateur', 'id_utilisateur');
