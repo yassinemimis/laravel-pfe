@@ -58,7 +58,7 @@ class UserController extends Controller
                         continue;
                     }
 
-                    $randomPassword = Str::random(12);  
+                    $randomPassword = Str::random(6);  
 
                     $hashedPassword = Hash::make($randomPassword);
 
@@ -86,7 +86,7 @@ class UserController extends Controller
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'rigal!'
+                    'message' => $randomPassword
                 ]);
             } else {
                 return response()->json([

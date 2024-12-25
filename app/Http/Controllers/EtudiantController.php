@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Utilisateur_pf;
 use App\Models\Etudiant;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 class EtudiantController extends Controller
 {
 
@@ -84,5 +84,17 @@ public function destroy($id_utilisateur)
     return response()->json(['message' => 'Deleted successfully'], 204);
 }
 
+public function getEtudiant(Request $request) {
+    $query = $request->input('query');
 
+    // البحث عن أسماء المدرسين
+    $results = DB::table('etudiant')
+        ->join('utilisateur_pf', 'etudiant.id_utilisateur', '=', 'utilisateur_pf.id_utilisateur')
+        ->select('etudiant.id', 'utilisateur_pf.nom', 'utilisateur_pf.prenom', 'etudiant.intitule_option')
+        ->where('utilisateur_pf.nom', 'LIKE', '%' . $query . '%')
+        ->orWhere('utilisateur_pf.prenom', 'LIKE', '%' . $query . '%')
+        ->get();
+
+    return response()->json($results);
+}
 }

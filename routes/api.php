@@ -8,6 +8,7 @@ use App\Http\Controllers\EmailTemplateController;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\ThemePfController;
 use App\Http\Controllers\EnseignantController;
+use App\Http\Controllers\AuthController;
 
 Route::get('/test', function () {
     return response()->json(['message' => 'API is aaaaaaaaaa working!']);
@@ -44,3 +45,8 @@ Route::get('/enseignants/{id}', [EnseignantController::class, 'show']);
 Route::put('/enseignants/{id}', [EnseignantController::class, 'update']);
 Route::delete('/enseignants/{id}', [EnseignantController::class, 'destroy']);
 Route::get('/co-encadrants', [EnseignantController::class, 'getCoEncadrants']);
+Route::get('/co-etudiant', [EtudiantController::class, 'getEtudiant']);
+
+
+
+Route::post('/login', [AuthController::class, 'login']);
