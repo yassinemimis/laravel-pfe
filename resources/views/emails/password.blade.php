@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>كلمة مرور جديدة</title>
+    <title>Nouveau mot de passe</title>
 </head>
 <body>
     <h1>Welcome!</h1>
