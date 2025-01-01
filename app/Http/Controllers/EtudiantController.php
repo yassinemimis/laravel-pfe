@@ -87,7 +87,7 @@ public function destroy($id_utilisateur)
 public function getEtudiant(Request $request) {
     $query = $request->input('query');
 
-    // البحث عن أسماء المدرسين
+  
     $results = DB::table('etudiant')
         ->join('utilisateur_pf', 'etudiant.id_utilisateur', '=', 'utilisateur_pf.id_utilisateur')
         ->select('etudiant.id', 'utilisateur_pf.nom', 'utilisateur_pf.prenom', 'etudiant.intitule_option')

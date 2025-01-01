@@ -9,7 +9,7 @@ use App\Mail\SendPasswordEmail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
-
+use App\Models\Etudiant;
 class UserController extends Controller
 {
     public function import(Request $request)
@@ -63,14 +63,16 @@ class UserController extends Controller
                     $hashedPassword = Hash::make($randomPassword);
 
                
-                    $user = Utilisateur_pf::create([
+                    $utilisateur_pf = Utilisateur_pf::create([
                         'nom' => $rowData['nom'],
                         'prenom' => $rowData['prenom'],
                         'type_utilisateur' => $rowData['type_utilisateur'],
                         'adresse_email' => $rowData['adresse_email'],
                         'password' => $hashedPassword,
                     ]);
-
+                    $etudiant = Etudiant::create([
+                        'id_utilisateur' => $utilisateur_pf->id_utilisateur, 
+                    ]);
               
                     Mail::to($rowData['adresse_email'])->send(new SendPasswordEmail($randomPassword));
                 }

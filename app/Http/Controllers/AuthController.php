@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Utilisateur_pf;
-
+use Illuminate\Support\Facades\DB;
 class AuthController extends Controller
 {
     public function login(Request $request)
@@ -23,13 +23,19 @@ class AuthController extends Controller
         if ( Hash::check($request->password, $utilisateur_pf->password)) {
            
             Auth::login($utilisateur_pf);
-
+            $result = DB::table('utilisateur_pf')
+            ->join('etudiant', 'utilisateur_pf.id_utilisateur', '=', 'etudiant.id_utilisateur')
+            ->where('utilisateur_pf.id_utilisateur', $utilisateur_pf->id_utilisateur)
+            ->select('etudiant.id')
+            ->get();
           
             return response()->json([
-                'success' => $utilisateur_pf->type_utilisateur,
+                'type_utilisateur' => $utilisateur_pf->type_utilisateur,
                 'message' => $utilisateur_pf->id_utilisateur,
-
-                'message1' => $request->password
+                'message1' => $request->password,
+                'nom' => $utilisateur_pf->nom,
+                'prenom' => $utilisateur_pf->prenom,
+                'result' => $result
             ]);
         } else {
             return response()->json([
