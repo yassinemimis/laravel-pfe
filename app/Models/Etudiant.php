@@ -10,7 +10,7 @@ class Etudiant extends Model
     use HasFactory;
 
     protected $table = 'etudiant'; 
-    protected $primaryKey = 'id_etu';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'id_utilisateur',

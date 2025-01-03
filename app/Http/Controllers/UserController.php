@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Etudiant;
+use App\Models\Enseignant;
 class UserController extends Controller
 {
     public function import(Request $request)
@@ -70,7 +71,8 @@ class UserController extends Controller
                         'adresse_email' => $rowData['adresse_email'],
                         'password' => $hashedPassword,
                     ]);
-                    $etudiant = Etudiant::create([
+
+                    $enseignant = Enseignant::create([
                         'id_utilisateur' => $utilisateur_pf->id_utilisateur, 
                     ]);
               

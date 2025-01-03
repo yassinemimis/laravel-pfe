@@ -11,7 +11,14 @@ class EnseignantController extends Controller
 {
     public function index()
     {
-        return Enseignant::all(); // Récupère tous les enseignants
+  
+        $result = DB::table('utilisateur_pf')
+        ->join('enseignant', 'utilisateur_pf.id_utilisateur', '=', 'enseignant.id_utilisateur')
+        ->where('type_utilisateur', 'enseignant')
+        ->select('utilisateur_pf.*', 'enseignant.*') 
+        ->get();
+
+        return $result;
     }
 
     public function store(Request $request)
@@ -45,15 +52,38 @@ class EnseignantController extends Controller
         return $enseignant;
     }
 
-    public function destroy($id)
-    {
-        Enseignant::destroy($id); // Supprime un enseignant
-        return response()->json(['message' => 'Enseignant supprimé']);
+    public function destroy($id_utilisateur)
+{
+  
+    $utilisateur_pf = Utilisateur_pf::find($id_utilisateur);
+
+
+    if (!$utilisateur_pf) {
+        return response()->json(['message' => 'Utilisateur not found'], 404);
     }
+
+ 
+    if ($utilisateur_pf->enseignant) {
+        try {
+    
+            $utilisateur_pf->enseignant->delete();
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete from enseignant', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    try {
+
+        $utilisateur_pf->delete();
+        return response()->json(['message' => 'Deleted successfully'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to delete utilisateur_pf', 'error' => $e->getMessage()], 500);
+    }
+}
     public function getCoEncadrants(Request $request) {
         $query = $request->input('query');
 
-        // البحث عن أسماء المدرسين
+
         $results = DB::table('enseignant')
             ->join('utilisateur_pf', 'enseignant.id_utilisateur', '=', 'utilisateur_pf.id_utilisateur')
             ->select('enseignant.id_ens', 'utilisateur_pf.nom', 'utilisateur_pf.prenom', 'enseignant.grade_ens')

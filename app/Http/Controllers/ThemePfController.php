@@ -44,6 +44,7 @@ class ThemePfController extends Controller
             'titre_theme' => 'sometimes|string|max:255',
             'type_pf' => 'sometimes|string|max:50',
             'description' => 'sometimes|string',
+            'status' => 'sometimes|string|max:50',
             'affectation1' => 'sometimes|exists:utilisateur_pf,id_utilisateur',
             'affectation2' => 'sometimes|exists:utilisateur_pf,id_utilisateur',
             'encadrant_president' => 'nullable|exists:enseignant,id_ens',
@@ -53,6 +54,26 @@ class ThemePfController extends Controller
 
         $theme->update($data);
         return $theme;
+    }
+    public function update1(Request $request, $id)
+    {
+        // البحث عن المشروع باستخدام ID
+        $theme = ThemePf::find($id);
+
+        // التحقق من وجود المشروع
+        if (!$theme) {
+            return response()->json(['message' => 'المشروع غير موجود!'], 404);
+        }
+
+        // تحديث الحقل "status"
+        $request->validate([
+            'status' => 'required|in:pending,accepted,rejected',
+        ]);
+
+        $theme->status = $request->status;
+        $theme->save();
+
+        return response()->json(['message' => 'تم تحديث حالة المشروع بنجاح!'], 200);
     }
 
     public function destroy($id)
@@ -90,6 +111,28 @@ public function assignMultipleProjects(Request $request)
         'message' => 'Projets assignés avec succès.',
         'updated_projects' => $updatedProjects,
     ]);
+}
+public function getPendingProjects()
+{
+
+    $pendingProjects = ThemePf::where('status', 'En attente')->where('depse', 'Etudiant')->get();
+
+    return response()->json($pendingProjects, 200);
+}
+
+public function getPendingProjects1()
+{
+
+    $pendingProjects = ThemePf::where('status', 'En attente')->where('depse', 'Enseignant')->get();
+
+    return response()->json($pendingProjects, 200);
+}
+public function getPendingProjects2()
+{
+
+    $pendingProjects = ThemePf::where('status', 'En attente')->where('depse', 'Entreprise')->get();
+
+    return response()->json($pendingProjects, 200);
 }
 
 }

@@ -23,12 +23,32 @@ class AuthController extends Controller
         if ( Hash::check($request->password, $utilisateur_pf->password)) {
            
             Auth::login($utilisateur_pf);
-            $result = DB::table('utilisateur_pf')
+            if($utilisateur_pf->type_utilisateur == 'Admin'){
+                return response()->json([
+                    'type_utilisateur' => $utilisateur_pf->type_utilisateur,
+                    'message' => $utilisateur_pf->id_utilisateur,
+                    'message1' => $request->password,
+                    'nom' => $utilisateur_pf->nom,
+                    'prenom' => $utilisateur_pf->prenom
+                
+                ]);
+            }
+            else{
+            if($utilisateur_pf->type_utilisateur == 'etudiant')
+          {  $result = DB::table('utilisateur_pf')
             ->join('etudiant', 'utilisateur_pf.id_utilisateur', '=', 'etudiant.id_utilisateur')
             ->where('utilisateur_pf.id_utilisateur', $utilisateur_pf->id_utilisateur)
             ->select('etudiant.id')
             ->get();
-          
+        }
+        else if($utilisateur_pf->type_utilisateur == 'enseignant'){
+            $result = DB::table('utilisateur_pf')
+            ->join('enseignant', 'utilisateur_pf.id_utilisateur', '=', 'enseignant.id_utilisateur')
+            ->where('utilisateur_pf.id_utilisateur', $utilisateur_pf->id_utilisateur)
+            ->select('enseignant.id_ens','est_responsable')
+            ->get();
+        }
+        
             return response()->json([
                 'type_utilisateur' => $utilisateur_pf->type_utilisateur,
                 'message' => $utilisateur_pf->id_utilisateur,
@@ -37,6 +57,7 @@ class AuthController extends Controller
                 'prenom' => $utilisateur_pf->prenom,
                 'result' => $result
             ]);
+        }
         } else {
             return response()->json([
                 'success' => false,

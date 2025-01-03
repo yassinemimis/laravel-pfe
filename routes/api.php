@@ -25,11 +25,11 @@ Route::get('/email-templates/{id}', [EmailTemplateController::class, 'show']);
 Route::put('/email-templates/{id}', [EmailTemplateController::class, 'update']);
 Route::delete('/email-templates/{id}', [EmailTemplateController::class, 'destroy']);
 
-Route::get('/teachers', [EtudiantController::class, 'index']);
-Route::post('/teachers', [EtudiantController::class, 'store']);
-Route::get('/teachers/{id}', [EtudiantController::class, 'show']);
-Route::put('/teachers/{id}', [EtudiantController::class, 'update']);
-Route::delete('/teachers/{id}', [EtudiantController::class, 'destroy']);
+Route::get('/etudiant', [EtudiantController::class, 'index']);
+Route::post('/etudiant', [EtudiantController::class, 'store']);
+Route::get('/etudiant/{id}', [EtudiantController::class, 'show']);
+Route::put('/etudiant/{id}', [EtudiantController::class, 'update']);
+Route::delete('/etudiant/{id}', [EtudiantController::class, 'destroy']);
  
 Route::post('/assign-multiple-projects', [ThemePfController::class, 'assignMultipleProjects']);
 
@@ -38,8 +38,12 @@ Route::get('/themes', [ThemePfController::class, 'index']);
 Route::post('/themes', [ThemePfController::class, 'store']);
 Route::get('/themes/{id}', [ThemePfController::class, 'show']);
 Route::put('/themes/{id}', [ThemePfController::class, 'update']);
+Route::put('/themes1/{id}', [ThemePfController::class, 'update1']);
 Route::delete('/themes/{id}', [ThemePfController::class, 'destroy']);
 Route::get('/encadrant', [ThemePfController::class, 'getWithoutEncadrantPresident']);
+Route::get('/enattente', [ThemePfController::class, 'getPendingProjects']);
+Route::get('/enattente1', [ThemePfController::class, 'getPendingProjects1']);
+Route::get('/enattente2', [ThemePfController::class, 'getPendingProjects2']);
 
 Route::get('/enseignants', [EnseignantController::class, 'index']);
 Route::post('/enseignants', [EnseignantController::class, 'store']);

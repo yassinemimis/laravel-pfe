@@ -29,7 +29,8 @@ class Utilisateur_pf extends Authenticatable
   
     public function etudiant()
     {
-        return $this->hasOne(Etudiant::class, 'id_utilisateur');
+        return $this->hasOne(Etudiant::class, 'id_utilisateur', 'id_utilisateur');
     }
+    
     
 }
