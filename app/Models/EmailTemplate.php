@@ -16,5 +16,7 @@ class EmailTemplate extends Model
         'recipient',
         'send_date',
         'reminder_date',
+        'is_sent',
+        'is_reminder',
     ];
 }
