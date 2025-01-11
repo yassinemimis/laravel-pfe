@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\ThemePfController;
 use App\Http\Controllers\EnseignantController;
 use App\Http\Controllers\AuthController;
+use App\Models\EmailTemplate;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendEmail;
+use Carbon\Carbon;
 
 Route::get('/test', function () {
     return response()->json(['message' => 'API is aaaaaaaaaa working!']);
@@ -56,3 +60,39 @@ Route::get('/co-etudiant', [EtudiantController::class, 'getEtudiant']);
 
 
 Route::post('/login', [AuthController::class, 'login']);
+
+
+
+Route::post('/sendemailtemplates', function () {
+
+   $emailTemplates = EmailTemplate::whereDate('send_date', Carbon::today())
+        ->get();
+
+    foreach ($emailTemplates as $template) {
+      
+       
+        if($template->recipient=="etudiant"){
+
+            $result = DB::table('utilisateur_pf')
+            ->join('etudiant', 'utilisateur_pf.id_utilisateur', '=', 'etudiant.id_utilisateur')
+            ->select('adresse_email') 
+            ->get();
+            foreach ($result as $adresse_email) {
+                Mail::to($adresse_email->adresse_email)->send(new SendEmail($template));
+            }
+        }
+        else if($template->recipient=="enseignant"){
+            
+            $result = DB::table('utilisateur_pf')
+            ->join('enseignant', 'utilisateur_pf.id_utilisateur', '=', 'enseignant.id_utilisateur')
+            ->select('adresse_email') 
+            ->get();
+            foreach ($result as $adresse_email) {
+                Mail::to($adresse_email->adresse_email)->send(new SendEmail($template));
+            }
+        }
+        
+    }
+
+    return response()->json(['status' => $emailTemplates]);
+});

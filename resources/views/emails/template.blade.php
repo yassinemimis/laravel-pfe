@@ -1,11 +1,10 @@
-<!-- resources/views/emails/template.blade.php -->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ $subject }}</title>
+    <title>{{ $template->subject }}</title>
 </head>
 <body>
-    <h1>{{ $subject }}</h1>
-    <p>{{ $content }}</p>
+    <h1>{{ $template->name }}</h1>
+    {!! $content !!}
 </body>
 </html>
