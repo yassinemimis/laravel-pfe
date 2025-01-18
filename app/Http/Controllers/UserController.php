@@ -9,7 +9,9 @@ use App\Mail\SendPasswordEmail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
-
+use App\Models\Etudiant;
+use App\Models\Enseignant;
+use App\Models\EntEntreprise;
 class UserController extends Controller
 {
     public function import(Request $request)
@@ -58,20 +60,33 @@ class UserController extends Controller
                         continue;
                     }
 
-                    $randomPassword = Str::random(12);  
+                    $randomPassword = Str::random(6);  
 
                     $hashedPassword = Hash::make($randomPassword);
 
                
-                    $user = Utilisateur_pf::create([
+                    $utilisateur_pf = Utilisateur_pf::create([
                         'nom' => $rowData['nom'],
                         'prenom' => $rowData['prenom'],
                         'type_utilisateur' => $rowData['type_utilisateur'],
                         'adresse_email' => $rowData['adresse_email'],
                         'password' => $hashedPassword,
                     ]);
-
-              
+                    if($rowData['type_utilisateur']=='enseignant'){
+                    $enseignant = Enseignant::create([
+                        'id_utilisateur' => $utilisateur_pf->id_utilisateur, 
+                    ]);
+                    }
+                    else if($rowData['type_utilisateur']=='etudiant'){
+                        $etudiant = Etudiant::create([
+                            'id_utilisateur' => $utilisateur_pf->id_utilisateur, 
+                        ]);
+                    }
+                    else{
+                        $entreprise = EntEntreprise::create([
+                            'id_utilisateur' => $utilisateur_pf->id_utilisateur, 
+                        ]);
+                    }
                     Mail::to($rowData['adresse_email'])->send(new SendPasswordEmail($randomPassword));
                 }
 
@@ -86,7 +101,7 @@ class UserController extends Controller
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'rigal!'
+                    'message' => $randomPassword
                 ]);
             } else {
                 return response()->json([

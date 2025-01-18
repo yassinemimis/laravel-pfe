@@ -5,20 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Etudiant extends Model
+class EntEntreprise extends Model
 {
     use HasFactory;
 
-    protected $table = 'etudiant'; 
-    protected $primaryKey = 'id';
 
+    protected $table = 'ententreprise';
+
+    protected $primaryKey = 'id_entreprise';
     protected $fillable = [
+        'denomination_entreprise',
         'id_utilisateur',
-        'intitule_option',
-        'moyenne_m1',
+        'created_at',
+        'updated_at',
     ];
 
-   
     
     public function utilisateur()
     {

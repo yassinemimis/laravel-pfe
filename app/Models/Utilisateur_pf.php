@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash; 
-class Utilisateur_pf extends Model
+use Illuminate\Foundation\Auth\User as Authenticatable;
+class Utilisateur_pf extends Authenticatable
 {
     use HasFactory;
-
+ 
     protected $table = 'Utilisateur_pf'; 
 
     protected $primaryKey = 'id_utilisateur'; 
@@ -16,6 +17,7 @@ class Utilisateur_pf extends Model
     public $timestamps = true; 
 
     protected $fillable = [
+        
         'nom',
         'prenom',
         'type_utilisateur',
@@ -24,22 +26,14 @@ class Utilisateur_pf extends Model
     ];
 
   
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($user) {
-            $user->password = Hash::make($user->password); 
-        });
-
-        static::updating(function ($user) {
-            if ($user->isDirty('password')) {
-                $user->password = Hash::make($user->password); 
-            }
-        });
-    }
+  
     public function etudiant()
     {
-        return $this->hasOne(Etudiant::class, 'id_utilisateur');
+        return $this->hasOne(Etudiant::class, 'id_utilisateur', 'id_utilisateur');
     }
+    public function entreprises()
+    {
+        return $this->hasMany(EntEntreprise::class, 'id_utilisateur', 'id_utilisateur');
+    }
+    
 }
