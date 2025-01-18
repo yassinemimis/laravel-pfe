@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ThemePf;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 class ThemePfController extends Controller
 {
     public function index()
@@ -57,15 +57,14 @@ class ThemePfController extends Controller
     }
     public function update1(Request $request, $id)
     {
-        // البحث عن المشروع باستخدام ID
+   
         $theme = ThemePf::find($id);
 
-        // التحقق من وجود المشروع
+       
         if (!$theme) {
             return response()->json(['message' => 'المشروع غير موجود!'], 404);
         }
 
-        // تحديث الحقل "status"
         $request->validate([
             'status' => 'required|in:pending,accepted,rejected',
         ]);
@@ -133,6 +132,20 @@ public function getPendingProjects2()
     $pendingProjects = ThemePf::where('status', 'En attente')->where('depse', 'Entreprise')->get();
 
     return response()->json($pendingProjects, 200);
+}
+public function getChoixEtudiant(Request $request)
+{
+
+    $request->validate([
+        'intitule_option' => 'sometimes|exists:options,id',
+    ]);
+
+    $results = DB::table('theme_pf')
+        ->whereNull('affectation1')
+        ->where('intitule_option', $request->intitule_option) 
+        ->get();
+
+    return response()->json($results, 200);
 }
 
 }

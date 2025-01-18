@@ -31,6 +31,9 @@ class Utilisateur_pf extends Authenticatable
     {
         return $this->hasOne(Etudiant::class, 'id_utilisateur', 'id_utilisateur');
     }
-    
+    public function entreprises()
+    {
+        return $this->hasMany(EntEntreprise::class, 'id_utilisateur', 'id_utilisateur');
+    }
     
 }

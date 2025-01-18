@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Etudiant;
 use App\Models\Enseignant;
+use App\Models\EntEntreprise;
 class UserController extends Controller
 {
     public function import(Request $request)
@@ -71,11 +72,21 @@ class UserController extends Controller
                         'adresse_email' => $rowData['adresse_email'],
                         'password' => $hashedPassword,
                     ]);
-
+                    if($rowData['type_utilisateur']=='enseignant'){
                     $enseignant = Enseignant::create([
                         'id_utilisateur' => $utilisateur_pf->id_utilisateur, 
                     ]);
-              
+                    }
+                    else if($rowData['type_utilisateur']=='etudiant'){
+                        $etudiant = Etudiant::create([
+                            'id_utilisateur' => $utilisateur_pf->id_utilisateur, 
+                        ]);
+                    }
+                    else{
+                        $entreprise = EntEntreprise::create([
+                            'id_utilisateur' => $utilisateur_pf->id_utilisateur, 
+                        ]);
+                    }
                     Mail::to($rowData['adresse_email'])->send(new SendPasswordEmail($randomPassword));
                 }
 

@@ -38,7 +38,14 @@ class AuthController extends Controller
           {  $result = DB::table('utilisateur_pf')
             ->join('etudiant', 'utilisateur_pf.id_utilisateur', '=', 'etudiant.id_utilisateur')
             ->where('utilisateur_pf.id_utilisateur', $utilisateur_pf->id_utilisateur)
-            ->select('etudiant.id')
+            ->select('etudiant.id','intitule_option')
+            ->get();
+        }
+        else if($utilisateur_pf->type_utilisateur == 'entreprise')
+          {  $result = DB::table('utilisateur_pf')
+            ->join('ententreprise', 'utilisateur_pf.id_utilisateur', '=', 'ententreprise.id_utilisateur')
+            ->where('utilisateur_pf.id_utilisateur', $utilisateur_pf->id_utilisateur)
+            ->select('ententreprise.id_entreprise')
             ->get();
         }
         else if($utilisateur_pf->type_utilisateur == 'enseignant'){

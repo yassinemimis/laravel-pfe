@@ -13,7 +13,7 @@ use App\Models\EmailTemplate;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendEmail;
 use Carbon\Carbon;
-
+use App\Http\Controllers\ChoixUnController;
 Route::get('/test', function () {
     return response()->json(['message' => 'API is aaaaaaaaaa working!']);
 });
@@ -34,7 +34,7 @@ Route::post('/etudiant', [EtudiantController::class, 'store']);
 Route::get('/etudiant/{id}', [EtudiantController::class, 'show']);
 Route::put('/etudiant/{id}', [EtudiantController::class, 'update']);
 Route::delete('/etudiant/{id}', [EtudiantController::class, 'destroy']);
- 
+Route::post('/projects', [ThemePfController::class, 'getChoixEtudiant']); 
 Route::post('/assign-multiple-projects', [ThemePfController::class, 'assignMultipleProjects']);
 
 
@@ -59,6 +59,12 @@ Route::get('/co-etudiant', [EtudiantController::class, 'getEtudiant']);
 
 
 
+Route::get('/choix', [ChoixUnController::class, 'index']); 
+Route::post('/choix', [ChoixUnController::class, 'store']); 
+Route::get('/choix/{id}', [ChoixUnController::class, 'show']); 
+Route::put('/choix/{id}', [ChoixUnController::class, 'update']); 
+Route::delete('/choix/{id}', [ChoixUnController::class, 'destroy']);
+Route::post('/choixBinome', [ChoixUnController::class, 'getBinome']); 
 Route::post('/login', [AuthController::class, 'login']);
 
 
