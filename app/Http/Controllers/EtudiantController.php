@@ -123,11 +123,25 @@ public function getEtudiant(Request $request) {
   
     $results = DB::table('etudiant')
         ->join('utilisateur_pf', 'etudiant.id_utilisateur', '=', 'utilisateur_pf.id_utilisateur')
-        ->select('etudiant.id', 'utilisateur_pf.nom', 'utilisateur_pf.prenom', 'etudiant.intitule_option')
+        ->select('etudiant.id', 'utilisateur_pf.nom', 'utilisateur_pf.prenom', 'etudiant.intitule_option','utilisateur_pf.adresse_email')
         ->where('utilisateur_pf.nom', 'LIKE', '%' . $query . '%')
         ->orWhere('utilisateur_pf.prenom', 'LIKE', '%' . $query . '%')
         ->get();
 
     return response()->json($results);
 }
+public function getEtudiant4(Request $request) {
+    $searchQuery = $request->input('query');
+
+    $results = DB::table('theme_pf')
+        ->where(function ($query) use ($searchQuery) {
+            $query->where('affectation1', $searchQuery)
+                  ->orWhere('affectation2', $searchQuery);
+        })
+        ->where('status', 'En attente')
+        ->get();
+
+    return response()->json($results);
+}
+
 }

@@ -64,7 +64,7 @@ class ChoixUnController extends Controller
         return response()->json(['message' => 'Choix mis à jour avec succès.', 'choix' => $choix], 200);
     }
 
-    // حذف اختيار
+
     public function destroy($id)
     {
         $choix = ChoixUn::find($id);
@@ -77,17 +77,17 @@ class ChoixUnController extends Controller
         return response()->json(['message' => 'Choix supprimé avec succès.'], 200);
     }
     public function getBinome(Request $request) {
-        // التحقق من أن id_etu2 موجود في الطلب ويجب أن يكون قيمة صحيحة في جدول etudiant
+       
         $request->validate([
             'id_etu2' => 'sometimes|exists:etudiant,id',
         ]);
     
-        // إذا لم يتم تقديم id_etu2 في الطلب
+       
         if (!$request->has('id_etu2')) {
             return response()->json(['error' => 'ID of the second student (id_etu2) is required'], 400);
         }
     
-        // استعلام للبحث عن البيانات المرتبطة بـ id_etu2
+        
         $result = DB::table('choix_un')
             ->join('etudiant', 'etudiant.id', '=', 'choix_un.id_etu')
             ->join('utilisateur_pf', 'utilisateur_pf.id_utilisateur', '=', 'etudiant.id_utilisateur')
@@ -97,13 +97,16 @@ class ChoixUnController extends Controller
             ->select('theme_pf.titre_theme', 'utilisateur_pf.prenom', 'utilisateur_pf.nom')
             ->get();
     
-        // التحقق من وجود نتائج
+   
         if ($result->isEmpty()) {
             return response()->json(['message' => 'No records found for the given student ID'], 404);
         }
     
-        // إرجاع النتيجة
-        return response()->json($result, 200);
+       
+        return response()->json([
+            'status' => 'success',
+            'data' => $result
+        ], 200);
     }
     
 }

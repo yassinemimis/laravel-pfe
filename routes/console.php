@@ -32,6 +32,20 @@ foreach ($emailTemplates as $template) {
             Mail::to($adresse_email->adresse_email)->send(new SendEmail($template));
         }
     }
+    else if($template->recipient=="etudiant5"){
+
+
+    $emails = DB::table('theme_pf')
+    ->join('ententreprise', 'theme_pf.id_entreprise', '=', 'ententreprise.id_entreprise')
+    ->join('utilisateur_pf', 'utilisateur_pf.id_utilisateur', '=', 'ententreprise.id_utilisateur')
+    ->where('theme_pf.depse', 'Entreprise')
+    ->whereNull('theme_pf.encadrant_president')
+    ->pluck('utilisateur_pf.adresse_email');
+
+        foreach ($emails as $adresse_email) {
+            Mail::to($adresse_email->adresse_email)->send(new SendEmail($template));
+        }
+    }
     else if($template->recipient=="enseignant"){
         
         $result = DB::table('utilisateur_pf')
