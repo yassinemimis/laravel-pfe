@@ -3,63 +3,67 @@
 
 namespace App\Http\Controllers;
 use App\Models\Utilisateur_pf;
-use App\Models\Enseignant;
+use App\Models\EntEntreprise;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class EnseignantController extends Controller
+class EntrepriseController extends Controller
 {
     public function index()
     {
   
         $result = DB::table('utilisateur_pf')
-        ->join('enseignant', 'utilisateur_pf.id_utilisateur', '=', 'enseignant.id_utilisateur')
-        ->where('type_utilisateur', 'enseignant')
-        ->select('utilisateur_pf.*', 'enseignant.*') 
+        ->join('ententreprise', 'utilisateur_pf.id_utilisateur', '=', 'ententreprise.id_utilisateur')
+        ->where('type_utilisateur', 'entreprise')
+        ->select('utilisateur_pf.*', 'ententreprise.*') 
         ->get();
-
+      
         return $result;
     }
 
     public function store(Request $request)
     {
-       
-
-        $request->validate([
+    
+        $validatedData = $request->validate([
             'nom' => 'required|string',
             'prenom' => 'required|string',
             'adresse_email' => 'required|email|unique:utilisateur_pf',
             'type_utilisateur' => 'required|string',
             'password' =>'required|string',
-            'date_recrutement' => 'required|date',
-            'grade_ens' => 'required|string|max:50',
-            'est_responsable' => 'required|boolean',
+            'denomination_entreprise' => 'required|string',
         ]);
-
-        $utilisateur_pf = Utilisateur_pf::create($request->only(['nom', 'prenom', 'adresse_email', 'type_utilisateur','password']));
-
-        $etudiant = Enseignant::create([
+        
+       
+        $utilisateur_pf = Utilisateur_pf::create([
+            'nom' => $validatedData['nom'],
+            'prenom' => $validatedData['prenom'],
+            'adresse_email' => $validatedData['adresse_email'],
+            'type_utilisateur' => $validatedData['type_utilisateur'],
+            'password' => $validatedData['password'],
+        ]);
+    
+       
+        $entreprisent = EntEntreprise::create([
             'id_utilisateur' => $utilisateur_pf->id_utilisateur, 
-            'date_recrutement' => $request->date_recrutement,
-            'grade_ens' => $request->grade_ens,
-            'est_responsable' => $request->est_responsable,
+            'denomination_entreprise' => $validatedData['denomination_entreprise'],
         ]);
+    
+        return response()->json(['utilisateur_pf' => $utilisateur_pf, 'entreprisent' => $entreprisent], 201);
     }
+    
 
     public function show($id)
     {
-        return Enseignant::findOrFail($id); // Récupère un enseignant spécifique
+        return EntEntreprise::findOrFail($id); 
     }
 
     public function update(Request $request, $id)
     {
-        $enseignant = Enseignant::findOrFail($id);
+        $ententreprise = EntEntreprise::findOrFail($id);
 
         $data = $request->validate([
             'id_utilisateur' => 'sometimes|exists:utilisateur_pf,id_utilisateur',
-            'date_recrutement' => 'sometimes|date',
-            'grade_ens' => 'sometimes|string|max:50',
-            'est_responsable' => 'sometimes|boolean',
+            'denomination_entreprise' => 'required|string',
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
             'adresse_email' => 'required|email',
@@ -74,41 +78,40 @@ class EnseignantController extends Controller
             }
         }
 
-        $enseignant->update($data);
+        $ententreprise->update($data);
     
 
-        return response()->json($enseignant);
+        return response()->json($ententreprise);
     }
     
 
     public function destroy($id_utilisateur)
 {
-  
     $utilisateur_pf = Utilisateur_pf::find($id_utilisateur);
-
 
     if (!$utilisateur_pf) {
         return response()->json(['message' => 'Utilisateur not found'], 404);
     }
 
- 
-    if ($utilisateur_pf->enseignant) {
+    $ententreprise = $utilisateur_pf->ententreprise;
+    if ($ententreprise) {
         try {
-    
-            $utilisateur_pf->enseignant->delete();
+
+            $ententreprise->delete();
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to delete from enseignant', 'error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Failed to delete from ententreprise', 'error' => $e->getMessage()], 500);
         }
     }
 
     try {
-
         $utilisateur_pf->delete();
         return response()->json(['message' => 'Deleted successfully'], 200);
     } catch (\Exception $e) {
         return response()->json(['message' => 'Failed to delete utilisateur_pf', 'error' => $e->getMessage()], 500);
     }
 }
+
+
     public function getCoEncadrants(Request $request) {
         $query = $request->input('query');
 
@@ -122,13 +125,12 @@ class EnseignantController extends Controller
 
         return response()->json($results);
     }
-    public function getEnseignant4(Request $request) {
-        $searchQuery = $request->input('query');
+    public function getEntreprise4(Request $request) {
+        $searchQuery = $request->input('query'); 
     
         $results = DB::table('theme_pf')
             ->where(function ($query) use ($searchQuery) {
-                $query->where('encadrant_president', $searchQuery)
-                      ->orWhere('co_encadrant', $searchQuery);
+                $query->where('id_entreprise', $searchQuery);
             })
             ->where('status', 'En attente')
             ->get();

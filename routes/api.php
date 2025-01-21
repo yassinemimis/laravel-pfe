@@ -8,6 +8,7 @@ use App\Http\Controllers\EmailTemplateController;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\ThemePfController;
 use App\Http\Controllers\EnseignantController;
+use App\Http\Controllers\EntrepriseController;
 use App\Http\Controllers\AuthController;
 use App\Models\EmailTemplate;
 use Illuminate\Support\Facades\Mail;
@@ -56,8 +57,9 @@ Route::put('/enseignants/{id}', [EnseignantController::class, 'update']);
 Route::delete('/enseignants/{id}', [EnseignantController::class, 'destroy']);
 Route::get('/co-encadrants', [EnseignantController::class, 'getCoEncadrants']);
 Route::get('/co-etudiant', [EtudiantController::class, 'getEtudiant']);
-
-
+Route::get('/etudiant4', [EtudiantController::class, 'getEtudiant4']);
+Route::get('/enseignant4', [EnseignantController::class, 'getEnseignant4']);
+Route::get('/entreprise4', [EntrepriseController::class, 'getEntreprise4']);
 
 Route::get('/choix', [ChoixUnController::class, 'index']); 
 Route::post('/choix', [ChoixUnController::class, 'store']); 
@@ -67,7 +69,11 @@ Route::delete('/choix/{id}', [ChoixUnController::class, 'destroy']);
 Route::post('/choixBinome', [ChoixUnController::class, 'getBinome']); 
 Route::post('/login', [AuthController::class, 'login']);
 
-
+Route::get('/entreprise', [EntrepriseController::class, 'index']);
+Route::post('/entreprise', [EntrepriseController::class, 'store']);
+Route::get('/entreprise/{id}', [EntrepriseController::class, 'show']);
+Route::put('/entreprise/{id}', [EntrepriseController::class, 'update']);
+Route::delete('/entreprise/{id}', [EntrepriseController::class, 'destroy']);
 
 Route::post('/sendemailtemplates', function () {
 

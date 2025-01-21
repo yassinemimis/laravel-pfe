@@ -53,6 +53,7 @@ class UserController extends Controller
                         'prenom' => 'required|string|max:255',
                         'type_utilisateur' => 'required|string|max:50',
                         'adresse_email' => 'required|email|unique:utilisateur_pf,adresse_email',
+                        'date_recrutement' => 'required|date',
                     ]);
 
                     if ($validator->fails()) {
@@ -74,17 +75,23 @@ class UserController extends Controller
                     ]);
                     if($rowData['type_utilisateur']=='enseignant'){
                     $enseignant = Enseignant::create([
-                        'id_utilisateur' => $utilisateur_pf->id_utilisateur, 
+                        'id_utilisateur' => $utilisateur_pf->id_utilisateur,
+                        'date_recrutement' => $rowData['date_recrutement'],
+                        'intitule_option' => $rowData['intitule_option'],
+                        'moyenne_m1' => $rowData['moyenne_m1'],
                     ]);
                     }
                     else if($rowData['type_utilisateur']=='etudiant'){
                         $etudiant = Etudiant::create([
-                            'id_utilisateur' => $utilisateur_pf->id_utilisateur, 
+                            'id_utilisateur' => $utilisateur_pf->id_utilisateur,
+                            'grade_ens' => $rowData['grade_ens'],
+                            'est_responsable' => $rowData['est_responsable'], 
                         ]);
                     }
                     else{
                         $entreprise = EntEntreprise::create([
-                            'id_utilisateur' => $utilisateur_pf->id_utilisateur, 
+                            'id_utilisateur' => $utilisateur_pf->id_utilisateur,
+                            'denomination_entreprise' => $rowData['denomination_entreprise'],                        
                         ]);
                     }
                     Mail::to($rowData['adresse_email'])->send(new SendPasswordEmail($randomPassword));
